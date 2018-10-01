@@ -1,0 +1,12 @@
+{
+  "name": "e164-parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "cd src && mocha *.test.js"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
+}
