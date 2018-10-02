@@ -36,6 +36,11 @@ get-func-name@^2.0.0:
   resolved "https://registry.yarnpkg.com/get-func-name/-/get-func-name-2.0.0.tgz#ead774abee72e20409433a066366023dd6887a41"
   integrity sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=
 
+google-libphonenumber@^3.1.14:
+  version "3.1.14"
+  resolved "https://registry.yarnpkg.com/google-libphonenumber/-/google-libphonenumber-3.1.14.tgz#be67b52c33590deb568e5c3faa6f811aa5d7a8eb"
+  integrity sha512-87znRJE3r3hX3wXIIftIXNBoFw7AqbDpfih3JIVD5FA47ZhkWOCVTOBReGgqZgq+H5KU6t+8/E0MrcbWTyjYwQ==
+
 pathval@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"

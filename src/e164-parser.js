@@ -1,5 +1,45 @@
-const _handleErrors = require('./_handleErrors');
-const { CC_USA } = require('./constants');
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const PNF = require('google-libphonenumber').PhoneNumberFormat;
+
+const _hasCorrectLength = str => str.length >= 10 && str.length <= 16;
+
+/**
+ * checks if a string is formatted as a phone number
+ *
+ * first checks if there is a ( and ) afterwards,
+ * if there is, it will remove these parens
+ *
+ * then checks if the first char of string is a number
+ *
+ * and finally checks if the string is formatted as
+ * 3 digits
+ * a space, -, or nothing
+ * 3 digits
+ * a space, -, or nothing
+ * 4 digits
+ *
+ * @param {string} str phone number
+ * @return {boolean} true if the phone is formatted correctly, false otherwise
+ */
+const _isFormatted = str => {
+  let s = str;
+
+  if (s.indexOf('(') < s.indexOf(')') && s.match(/(\d{3})/)) {
+    s = s.replace(/[()]/g, '');
+  }
+
+  const m0 = s.match(/1[ -]?/);
+
+  if (m0) {
+    s = s.replace(m0[0], '');
+  }
+
+  const match = s.match(/\d{3}[- ]?\d{3}[- ]?\d{4}/);
+
+  if (match && match[0] !== match.input) return false;
+
+  return match;
+};
 
 /**
  * parses a user input'd phone number to the E.164 standard for a
@@ -8,12 +48,6 @@ const { CC_USA } = require('./constants');
  * returns said parsed phone number
  * otherwise, returns `null`
  *
- * e.g.
- * 1234567890 -> +11234567890
- * 123-456-7890 -> +1123456790
- * 1-123-456-7890 -> +11234567890
- * 123-456-789o -> null
- *
  * for more information about E.164:
  * https://en.wikipedia.org/wiki/E.164
  *
@@ -21,30 +55,15 @@ const { CC_USA } = require('./constants');
  * https://en.wikipedia.org/wiki/List_of_country_calling_codes#Alphabetical_listing_by_country_or_region
  * https://en.wikipedia.org/wiki/North_American_Numbering_Plan
  *
- *
- * @param {string} phoneNo - phone number input by user
- * @returns {string} phone number in E.164 format
+ * @param {string} phoneNo phone number input by user
+ * @return {string} phone number in E.164 format
  */
 module.exports = phoneNo => {
-  if (typeof phoneNo !== 'string') return _handleErrors('type', typeof phoneNo);
+  const n = phoneUtil.parseAndKeepRawInput(phoneNo, 'US');
 
-  const e164 = phoneNo.replace(/[^\d]/g, '').split('');
-  const length = e164.length;
+  if (!_hasCorrectLength(phoneNo)) return null;
+  if (!_isFormatted(phoneNo)) return null;
+  if (!phoneUtil.isValidNumber(n)) return null;
 
-  switch (length) {
-    case 10:
-      e164.unshift(CC_USA);
-      break;
-
-    case 11:
-      if (e164[0] !== CC_USA[1]) return _handleErrors('country-code', e164[0]);
-
-      e164.unshift('+');
-      break;
-
-    default:
-      return _handleErrors('length', length);
-  }
-
-  return e164.join('');
+  return phoneUtil.format(n, PNF.E164);
 };
