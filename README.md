@@ -39,7 +39,7 @@ const inputs = [
   '-3604043222',
   ' 3604043222',
   '3604043222 ',
-  // '360422-3222', <-- this is returning null
+  // '360422-3222', <-- this is NOT returning null
 
   // invalid US numbers
   '111-111-1111',
